@@ -6,7 +6,7 @@ const resolvers = {
     Query: {
         personCount: async () => Person.countDocuments(),
         allPersons: async () => Person.find({}),
-        findPerson: async (root, args) => Person.find({ name: args.name }),
+        findPerson: async (root, args) => Person.findOne({ name: args.name }),
         allUsers: async () => User.find({}),
         me: (_root, _args, context) => context.currentUser
     },
