@@ -21,7 +21,8 @@ startStandaloneServer(server, {
         const isToken = authorization && authorization.startsWith("Bearer ");
         let token = isToken && authorization.trim().split(" ")[1];
         const { username } = jwt.verify(token, process.env.JWT_SECRET);
-        const currentUser = await User.findOne({ username })
+        let currentUser = await User.findOne({ username })
+        currentUser = await currentUser.populate("friends")
         return { currentUser }
     }
 }).then(async ({ url }) => {

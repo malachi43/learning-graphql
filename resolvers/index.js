@@ -37,7 +37,7 @@ const resolvers = {
         },
         addAsFriend: async (root, args, { currentUser }) => {
             const isFriend = (person) =>
-                currentUser.friends.map(f => f._id.toString()).includes(person._id.toString())
+                currentUser.friends.length > 0 && currentUser.friends.map(f => f._id.toString()).includes(person._id.toString())
 
             if (!currentUser) {
                 throw new GraphQLError('wrong credentials', {
@@ -46,11 +46,17 @@ const resolvers = {
             }
 
             const person = await Person.findOne({ name: args.name })
+
+            if (!person) throw new GraphQLError(`no person with name: ${args.name} found.`)
+
             if (!isFriend(person)) {
                 currentUser.friends = currentUser.friends.concat(person);
             }
 
             await currentUser.save()
+
+            console.log(currentUser)
+
 
             return currentUser
         },
